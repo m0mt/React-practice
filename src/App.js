@@ -29,7 +29,7 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      mode:'welcome',
+      mode:'read',
       subject:{title:'WEB', sub:'World Wide WEb!'},
       welcome:{title:'Welcome', desc:'Hello, React!!'}, 
       contents: [
@@ -49,15 +49,29 @@ class App extends Component {
       _title = this.state.contents[0].title;
       _desc = this.state.contents[0].desc;
     }
+    // let that = this; this를 가리키는 방식 첫번째 
+    console.log('render', this);
     return (
       <div className="App">
         {/* <Subject title={this.state.subject.title} sub={this.state.subject.sub}></Subject> */}
         {/* <Subject title="React" sub="For UI"></Subject> */}
         <header>
-            <h1><a href="/" onClick={(e) => {
-              // alert('hi');
+            <h1><a href="/" onClick={function(e) {
+              console.log('event in', this);
+              e.preventDefault();
+              // 화살표 함수에서 this는 언제나 상위 스코프의 this를 가리킴(Lexical this) (이 함수에서 this는 없음)
+              //                call, apply, bind메소드를 이용하여 this 변경 불가능
+              // 화살표 함수를 사용시 this 객체가 무엇을 가리키는지에 대해
+              // 조심히 사용할 것
+              // console.log(`${this.state.mode}`);
               console.log(e);
               e.preventDefault();
+              this.setState({
+                mode: 'welcome'
+              });
+              //.setState() 함수를 사용함으로써
+              // 안에 있는 내용 변화를 react에 알려주는 역할을 한다.
+              // 그런 후 render 적용됨.
             }}>{this.state.subject.title}</a></h1>
             {this.state.subject.sub}
         </header>
