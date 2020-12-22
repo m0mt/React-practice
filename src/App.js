@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import TOC from "./components/TOC"
 import Subject from "./components/Subject"
-import Content from "./components/Content"
+import ReadContent from "./components/ReadContent"
+import CreateContent from "./components/CreateContent"
+import Control from "./components/Control"
 import './App.css';
 
 // function App() {
@@ -28,8 +30,9 @@ import './App.css';
 class App extends Component {
   constructor(props) {
     super(props);
+    this.max_content_id = 3; // ui에 관계 없는 값이라서 state에 포함 x(불필요한 값이 렌더링 될수 있음.)
     this.state = {
-      mode:'read',
+      mode:'create',
       selected_content_id:2,
       subject:{title:'WEB', sub:'World Wide WEb!'},
       welcome:{title:'Welcome', desc:'Hello, React!!'}, 
@@ -42,10 +45,11 @@ class App extends Component {
   }
   render() {
     console.log('App render');
-    let _title, _desc = null;
+    let _title, _desc, _article = null;
     if(this.state.mode === "welcome") {
       _title = this.state.welcome.title;
       _desc = this.state.welcome.desc;
+      _article = <ReadContent title={_title} desc={_desc}></ReadContent>
     } else if (this.state.mode === "read") {
       for (let data of this.state.contents) { // find 함수로 변경 가능
         if (data.id === this.state.selected_content_id) {
@@ -54,6 +58,30 @@ class App extends Component {
           break;
         }
       }
+      _article = <ReadContent title={_title} desc={_desc}></ReadContent>
+    } else if(this.state.mode === 'create') {
+      _article = <CreateContent onSubmit={function(_title,_desc){
+        //add content to this.state.contents
+        this.max_content_id = this.max_content_id + 1;
+        // this.state.contents.push(
+        //   {id:this.max_content_id, title:_title, desc:_desc}
+        // );
+        // push가 아닌 concat을 쓰는 이유
+        // 원본의 데이터를 건드리지 않으면서 표현하기 위해
+        // shouldComponentUpdate()를 통해 성능향상에 도움
+
+        // push 를 쓰려고 한다면 
+        // 배열은 배열의 내용만 복제하는 Array.from(배열명)을 사용하고
+        // 객체는 객체의 내용만 복제하는 Object.assign({}, 배열명)을 사용해서 복제 한뒤 push이용
+        // *주의* Object.assign(배열명, {}) 식으로 복제 할 시 똑같은 객체로 생성됨
+        let _contents = this.state.contents.concat(
+          {id:this.max_content_id, title:_title, desc:_desc}
+        )
+        this.setState({
+          contents: _contents
+        })
+        console.log(_title, _desc);
+      }.bind(this)}></CreateContent>
     }
     // let that = this; this를 가리키는 방식 첫번째 
     console.log('render', this);
@@ -97,7 +125,15 @@ class App extends Component {
             });
         }.bind(this)}>
         </TOC>
-        <Content title={_title} desc={_desc}></Content>
+        <Control
+          onChangeMode={function(_mode){
+            this.setState({
+              mode:_mode
+            });
+          }.bind(this)}
+        ></Control>
+        {_article}
+        
 
       </div>
     );
