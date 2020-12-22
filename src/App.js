@@ -3,6 +3,7 @@ import TOC from "./components/TOC"
 import Subject from "./components/Subject"
 import ReadContent from "./components/ReadContent"
 import CreateContent from "./components/CreateContent"
+import UpdateContent from "./components/UpdateContent"
 import Control from "./components/Control"
 import './App.css';
 
@@ -43,22 +44,22 @@ class App extends Component {
       ]
     }
   }
-  render() {
-    console.log('App render');
-    let _title, _desc, _article = null;
+  getReadContent() {
+    for (let data of this.state.contents) { // find 함수로 변경 가능
+      if (data.id === this.state.selected_content_id) {
+        return data;
+      }
+    }
+  }
+  getContent() {
+    let _title, _desc, _article, _content, _contents = null;
     if(this.state.mode === "welcome") {
       _title = this.state.welcome.title;
       _desc = this.state.welcome.desc;
       _article = <ReadContent title={_title} desc={_desc}></ReadContent>
     } else if (this.state.mode === "read") {
-      for (let data of this.state.contents) { // find 함수로 변경 가능
-        if (data.id === this.state.selected_content_id) {
-          _title = data.title;
-          _desc = data.desc;
-          break;
-        }
-      }
-      _article = <ReadContent title={_title} desc={_desc}></ReadContent>
+      _content = this.getReadContent();
+      _article = <ReadContent title={_content.title} desc={_content.desc}></ReadContent>
     } else if(this.state.mode === 'create') {
       _article = <CreateContent onSubmit={function(_title,_desc){
         //add content to this.state.contents
@@ -69,21 +70,45 @@ class App extends Component {
         // push가 아닌 concat을 쓰는 이유
         // 원본의 데이터를 건드리지 않으면서 표현하기 위해
         // shouldComponentUpdate()를 통해 성능향상에 도움
-
+  
         // push 를 쓰려고 한다면 
         // 배열은 배열의 내용만 복제하는 Array.from(배열명)을 사용하고
         // 객체는 객체의 내용만 복제하는 Object.assign({}, 배열명)을 사용해서 복제 한뒤 push이용
         // *주의* Object.assign(배열명, {}) 식으로 복제 할 시 똑같은 객체로 생성됨
-        let _contents = this.state.contents.concat(
+        _contents = this.state.contents.concat(
           {id:this.max_content_id, title:_title, desc:_desc}
         )
         this.setState({
-          contents: _contents
+          contents: _contents,
+          mode: 'read',
+          selected_content_id: this.max_content_id
         })
         console.log(_title, _desc);
       }.bind(this)}></CreateContent>
+    } else if(this.state.mode === 'update') {
+      _content = this.getReadContent();
+      _article = <UpdateContent data={_content} onSubmit={
+        function(_id, _title, _desc){
+          _contents = Array.from(this.state.contents);
+          for (let i = 0; i < _contents.length; i++) {
+            if (_contents[i].id === _id) {
+              _contents[i] = {id:_id, title:_title, desc:_desc};
+              break;
+            }
+          }
+          this.setState({
+            contents: _contents,
+            mode: 'read'
+          })
+        }.bind(this)
+        
+      }></UpdateContent>
     }
     // let that = this; this를 가리키는 방식 첫번째 
+    return _article;
+  }
+  render() {
+    console.log('App render');
     console.log('render', this);
     return (
       <div className="App">
@@ -125,14 +150,31 @@ class App extends Component {
             });
         }.bind(this)}>
         </TOC>
-        <Control
-          onChangeMode={function(_mode){
-            this.setState({
-              mode:_mode
-            });
+        <Control 
+          onChangeMode={function(_mode) {
+            if (_mode === 'delete') {
+              if(window.confirm('really?')) {
+                let _contents = Array.from(this.state.contents);
+                for (let i = 0; i < _contents.length; i++) {
+                  if(_contents[i].id === this.state.selected_content_id) {
+                    _contents.splice(i, 1);
+                    break;
+                  }
+                }
+                this.setState({
+                  mode: 'welcome',
+                  contents: _contents
+                });
+                alert('deleted!');
+              } 
+            } else {
+                this.setState({
+                  mode: _mode
+                })
+            }
           }.bind(this)}
         ></Control>
-        {_article}
+        {this.getContent()}
         
 
       </div>
