@@ -25,6 +25,7 @@
                     newState = Object.assign({}, state, {color: action.color});
                     // state.color = 'red';
                 }
+                console.log(action.type, action, state, newState);
                 return newState
                 // reducer라는 것은 이전의 state와 action 을 받아서
                 // 다음 state값을 return 해줌
