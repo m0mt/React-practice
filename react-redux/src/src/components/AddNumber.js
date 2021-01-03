@@ -1,6 +1,4 @@
-import React, {Component} from 'react'
-import store from '../store';
-
+import React, {Component} from 'react';
 
 export default class AddNumber extends Component {
     state = {size: 1}
@@ -9,7 +7,8 @@ export default class AddNumber extends Component {
             <div>
                 <h1>Add Number</h1>
                 <input type="button" value="+" onClick={function() {
-                    store.dispatch({type:'INCREMENT', size: this.state.size});
+                    // 프레젠테이션 컴포넌트로 돌아옴.
+                    this.props.onClick(this.state.size);
                 }.bind(this)}></input>
                 <input type="text" value={this.state.size} onChange={function(e) {
                     this.setState({size: Number(e.target.value)})
