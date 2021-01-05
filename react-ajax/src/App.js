@@ -1,21 +1,10 @@
 import React, {Component} from 'react';
 
 class Nav extends Component {
-  state = {
-    list: []
-  }
-  componentDidMount() {
-    fetch('list.json')
-      .then(function(result) {
-        return result.json();
-      }) // 가져온 데이터를 어떤 데이터 타입으로 제어 할것인지를 첫번째 then에 적어줌.
-      .then(function(json){ // 
-        this.setState({list:json});
-      }.bind(this));
-  }
+  
   render() {
     let listTag = [];
-    for (let data of this.state.list) {
+    for (let data of this.props.list) {
       listTag.push(
         <li key={data.id}>
           <a href={data.id} data-id={data.id} onClick={function(e){
@@ -34,6 +23,7 @@ class Nav extends Component {
     );
   }
 }
+
 class Article extends Component {
   render() {
     return (
@@ -47,13 +37,23 @@ class Article extends Component {
 
 class App extends Component {
   state = {
-    article: {title:'Welcome', desc:'Hello, React & Ajax'}
+    article: {title:'Welcome', desc:'Hello, React & Ajax'},
+    list: []
+  }
+  componentDidMount() {
+    fetch('list.json')
+      .then(function(result) {
+        return result.json();
+      }) // 가져온 데이터를 어떤 데이터 타입으로 제어 할것인지를 첫번째 then에 적어줌.
+      .then(function(json){ // 
+        this.setState({list:json});
+      }.bind(this));
   }
   render() {
     return (
       <div className="App">
         <h1>WEB</h1>
-        <Nav onClick={function(id){
+        <Nav list={this.state.list} onClick={function(id){
           fetch(id + '.json')
             .then(function(result) {
               return result.json();
