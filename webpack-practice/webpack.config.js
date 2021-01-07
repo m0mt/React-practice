@@ -1,9 +1,12 @@
 const path = require('path');
 module.exports = {
-    entry: './source/index.js',
+    entry: {
+        index: './source/index.js',
+        about: './source/about.js'
+    },
     output: {
         path: path.resolve(__dirname, 'public'),
-        filename: 'index_bundle.js'
+        filename: '[name]_bundle.js'
     },
     // mode : 'development' || 'production' || 'none'
     // description: webpack.js.org/configuration
