@@ -1,15 +1,14 @@
 import React, { useState } from 'react';
-import Title from './Title';
 
 export default function Counter() {
-    const [count, setCount] = useState({ value: 0, value1: 0, value2: 0 });
+    const [count, setCount] = useState(0);
     function onClick() {
-        setCount({ ...count, value: count.value + 1 });
+        setCount(count + 1);
     }
     return (
         <div>
-            {count.value > 0 && <Title title={`현재 카운트: ${count.value}`} />}
+            <p>{`현재 카운트: ${count}`}</p>
             <button onClick={onClick}>증가</button>
         </div>
-    )
+    );
 }
