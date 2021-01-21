@@ -19,7 +19,7 @@ export default function Profile({ userId }) {
 }
 
 const USER1 = { name: 'mike', age: 23};
-const USER2 = { name: 'jane', age: 31};
+const USER2 = { nmae: 'jane', age: 31};
 function getUserApi(userId) {
     return new Promise(res => {
         setTimeout(() => {
