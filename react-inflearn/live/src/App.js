@@ -1,11 +1,10 @@
 import React from 'react';
-import User from './User';
+import FriendPage from './container/FriendPage';
 
 export default function App() {
-  return (
-    // <div>
-      // {/* <p>실전 리액트</p> */}
-      <User onChangeTitle={() => {}} male={123}></User>
-    // </div>
-  );
+    return (
+        <div>
+            <FriendPage />
+        </div>
+    );
 }
