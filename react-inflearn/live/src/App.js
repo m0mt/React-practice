@@ -1,15 +1,36 @@
-import React, { useState } from 'react';
-import MyComponent from './MyComponent';
+import React, { useState } from "react";
 
 export default function App() {
-    const [value1, setValue1] = useState(0);
-    const [value2, setValue2] = useState(0);
+    return <SelectFruit />;
+}
+
+function SelectFruit({ selectedFruit, onChange }) {
+    const [fruits, setFruits] = useState(['apple', 'banana', 'orange']);
+    const [newFruit, setNewFruit] = useState('');
+
+    function addNewFruit() {
+        fruits.push(newFruit);
+        setNewFruits('');
+    }
+    // ...
     return (
         <div>
-            <p>실전 리액트</p>
-            <button onClick={() => setValue1(value1 + 1)}>value1 증가</button>
-            <button onClick={() => setValue2(value2 + 1)}>value2 증가</button>
-            <MyComponent value1={value1} value2={value2} />
+            <Select options={fruits} selected={selectedFruit} onChange={onChange} />
+            <input
+                type="text"
+                value={newFruit}
+                onChange={e => setNewFruit(e.target.value)}
+            />
+            <button onClick={addNewFruit}>추가하기</button>
+            {/* ... */}
         </div>
     );
 }
+
+const Select = React.memo(({ options }) => (
+    <div>
+        {options.map(item => (
+            <p>{item}</p>
+        ))}
+    </div>
+));
