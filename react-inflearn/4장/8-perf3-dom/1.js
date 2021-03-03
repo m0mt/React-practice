@@ -1,21 +1,27 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 
 export default function App() {
     const [flag, setFlag] = useState(true);
     useEffect(() => {
         setTimeout(() => setFlag(prev => !prev), 1000);
     });
-
-    return (
-        <div
-            className={flag ? 'yes' : 'no'}
-            style={{ color: 'black', backgroundColor: flag ? '#ffaaaa' : '#aaffaa' }} 
-        >
-            <Counter />
-            <p>사과</p>
-            <p>바나나</p>
-        </div>    
-    );
+    if (flag) {
+        return (
+            <div>
+                <Counter />
+                <p>사과</p>
+                <p>바나나</p>
+            </div>
+        );
+    } else {
+        return (
+            <span>
+                <Counter />
+                <p>사과</p>
+                <p>바나나</p>
+            </span>
+        );
+    }
 }
 
 function Counter() {
