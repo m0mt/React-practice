@@ -1,53 +1,28 @@
-import React from 'react';
-import { createStore } from 'redux';
-import { Provider, useDispatch, useSelector } from 'react-redux';
+import { applyMiddleware, createStore } from 'redux';
 
-export default function App() {
-    return (
-        <div>
-            <Provider store={store} >
-                <User />
-                <Product />
-            </Provider>
-        </div>
-    );
-}
 
-const INITIAL_STATE = {
-    user: { name: 'mike' },
-    product: { name: 'iphone' },
+const saveToLocalStorage = store => next => action => {
+    if (action.meta?.localStorageKey) {
+        localStorage.setItem(action.meta?.localStorageKey, JSON.stringify(action));
+    }
+    return next(action);
 };
 
-function reducer(state = INITIAL_STATE, action) {
-    switch (action.type) {
-        case 'setUserName':
-            return {
-                ...state,
-                user: { ...state.user, name: action.name },
-            };
-        default:
-            return state;
+const myReducer = (state = { name: 'mike' }, action) => {
+    console.log('myReducer');
+    if(action.type === 'someAction') {
+        return { name: 'mike2' };
     }
-}
+    return state;
+};
 
-const store = createStore(reducer);
+const store = createStore(myReducer, applyMiddleware(saveToLocalStorage));
+store.dispatch({ 
+    type: 'someAction',
+    title: 'asdf',
+    meta: { localStorageKey: 'myKey' },
+});
 
-function User() {
-    console.log('User render');
-    const user = useSelector(state => state.user);
-    const dispatch = useDispatch();
-    return (
-        <div>
-            <p>{`${user.name}님 안녕하세요`}</p>
-            <button onClick={() => dispatch({ type: 'setUserName', name: 'john' })}>
-                사용자 이름 수정
-            </button>
-        </div>
-    );
-}
-
-function Product() {
-    console.log('Product render');
-    const product = useSelector(state => state.product);
-    return <p>{`제품 이름: ${product.name}`}</p>;
+export default function App() {
+    return <div>실전 리액트</div>
 }
