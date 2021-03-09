@@ -10,10 +10,10 @@ export default function TimelineMain() {
         let prevTimelines = store.getState().timeline.timelines;
         const unsubscribe = store.subscribe(() => {
             const timelines = store.getState().timeline.timelines;
-            console.log(prevTimelines, timelines); 
             if (prevTimelines !== timelines) {
                 forceUpdate();
             }
+            prevTimelines = timelines;
         });
         return () => unsubscribe();
     }, []);
