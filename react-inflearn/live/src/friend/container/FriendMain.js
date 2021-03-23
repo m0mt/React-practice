@@ -1,10 +1,10 @@
 import React from 'react';
 import { getNextFriend } from '../../common/mockData';
-import { addFriend, setAgeLimit, setShowLimit } from '../state';
+import { actions } from '../state/index';
 import FriendList from '../component/FriendList';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import NumberSelect from '../component/NumberSelect';
-import { MAX_AGE_LIMIT, MAX_SHOW_LIMIT } from '../state/common';
+import { MAX_AGE_LIMIT, MAX_SHOW_LIMIT } from '../common';
 import { getAgeLimit, getFriendsWithAgeLimit, getFriendsWithAgeShowLimit, getShowLimit } from '../state/selector';
 
 export default function FriendMain() {
@@ -25,21 +25,21 @@ export default function FriendMain() {
     const dispatch = useDispatch();
     function onAdd() {
         const friend = getNextFriend();
-        dispatch(addFriend(friend));
+        dispatch(actions.addFriend(friend));
     }
     console.log('FriendMain render');
     return (
         <div>
             <button onClick={onAdd}>친구 추가</button>
             <NumberSelect
-                onChange={v => dispatch(setAgeLimit(v))}
+                onChange={v => dispatch(actions.setValue('ageLimit', v))}
                 value={ageLimit}
                 options={AGE_LIMIT_OPTIONS}
                 postfix="세 이하만 보기"
             />
             <FriendList friends={friendsWithAgeLimit} />
             <NumberSelect
-                onChange={v => dispatch(setShowLimit(v))}
+                onChange={v => dispatch(actions.setValue('showLimit', v))}
                 value={showLimit}
                 options={SHOW_LIMIT_OPTIONS}
                 postfix="명 이하만 보기 (연령 제한 적용)"
