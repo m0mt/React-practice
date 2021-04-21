@@ -1,7 +1,14 @@
 import React from 'react';
-import { Row, Col, Dropdown } from 'antd';
+import { Button, Dropdown, Menu } from 'antd';
+import { SettingFilled } from '@ant-design/icons';
 
-export default function Settings() {
+ /**
+  * 
+  * @param {object} param
+  * @param {() => void} param.logout 
+  */
+
+export default function Settings({ logout }) {
     return (
         <Dropdown 
             overlay={
@@ -12,7 +19,7 @@ export default function Settings() {
             trigger={['click']}
             placement="bottomRight"    
         >
-            asdf
+            <Button shape="circle" icon={<SettingFilled />} />
         </Dropdown>
     );
 }
