@@ -1,6 +1,6 @@
 import { all, put, call, takeEvery } from 'redux-saga/effects';
-import { callApi } from '../../common/util/api';
 import { actions, Types } from './index';
+import { callApi } from '../../common/util/api';
 
 function* fetchAutoComplete({ keyword }) {
     const { isSuccess, data } = yield call(callApi, {
@@ -13,6 +13,12 @@ function* fetchAutoComplete({ keyword }) {
     }
 }
 
-export default function* gen() {
-    yield all([takeEvery(Types.fetchAutoComplete, fetchAutoComplete)]);
+// eslint-disable-next-line
+export default function* () {
+    yield all([
+      takeEvery(
+        Types.FetchAutoComplete,
+        fetchAutoComplete
+      ),
+    ]);
 }
