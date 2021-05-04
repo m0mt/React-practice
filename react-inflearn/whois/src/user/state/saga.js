@@ -1,4 +1,4 @@
-import { all, call, put, takeEvery } from "@redux-saga/core/effects";
+import { all, call, put, takeEvery, takeLeading } from "@redux-saga/core/effects";
 import { actions, Types } from ".";
 import { callApi } from "../../common/util/api";
 import { deleteApiCache, makeFetchSaga } from "../../common/util/fetch";
@@ -28,8 +28,20 @@ function* fetchUpdateUser({ user, key, value }) {
 
     if (isSuccess && data) {
         deleteApiCache();
+        yield put(actions.addHistory(data.history));
     } else {
         yield put(actions.setValue('user', user));
+    }
+}
+
+function* fetchUserHistory({ name }) {
+    const { isSuccess, data } = yield call(callApi, {
+        url: '/history',
+        params: { name },
+    });
+
+    if (isSuccess && data) {
+        yield put(actions.setValue('userHistory', data));
     }
 }
 
@@ -44,6 +56,10 @@ export default function* () {
         takeEvery(
             Types.FetchUpdateUser,
             makeFetchSaga({ fetchSaga: fetchUpdateUser, canCache: true }),
+        ),
+        takeLeading(
+            Types.FetchUserHistory,
+            makeFetchSaga({ fetchSaga: fetchUserHistory, canCache: false }),
         )
     ]);
 }
