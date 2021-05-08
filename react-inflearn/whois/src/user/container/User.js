@@ -8,6 +8,7 @@ import History from '../../common/component/History';
 import Department from '../container/Department';
 import TagList from '../container/TagList';
 import FetchLabel from '../component/FetchLable';
+import useNeedLogin from '../../common/hook/useNeedLogin';
 
 /**
  * 
@@ -16,6 +17,7 @@ import FetchLabel from '../component/FetchLable';
  */
 
 export default function User({ match }) {
+    useNeedLogin();
     const history = useHistory();
     const dispatch = useDispatch();
     const user = useSelector(state => state.user.user);
