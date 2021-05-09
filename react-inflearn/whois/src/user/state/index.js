@@ -1,4 +1,4 @@
-import { createReducer, createSetValueAction, FETCH_KEY, setValueReducer } from "../../common/redux-helper";
+import { createReducer, createSetValueAction, FETCH_KEY, NOT_IMMUTABLE, setValueReducer } from "../../common/redux-helper";
 
 export const Types = {
     SetValue: 'user/SetValue',
@@ -6,6 +6,7 @@ export const Types = {
     FetchUpdateUser: 'user/FetchUpdateUser',
     FetchUserHistory: 'user/FetchUserHistory',
     AddHistory: 'user/AddHistory',
+    Initialize: 'user/Initialize',
 };
 
 export const actions = {
@@ -20,6 +21,7 @@ export const actions = {
     }),
     fetchUserHistory: name => ({ type: Types.FetchUserHistory, name }),
     addHistory: history => ({ type: Types.AddHistory, history }),
+    initialize: () => ({ type: Types.Initialize, [NOT_IMMUTABLE]: true }),
 };
 
 const INITIAL_STATE = {
@@ -31,5 +33,13 @@ const reducer = createReducer(INITIAL_STATE, {
     [Types.SetValue]: setValueReducer,
     [Types.AddHistory]: (state, action) => 
         (state.userHistory = [action.history, ...state.userHistory]),
+    // immutable 을 사용했을때 이런식으로 사용
+    // [Types.Initialize]: (state) => {
+    //     state.user = undefined;
+    //     state.userHistory = [];
+    // }
+
+    // [NOT_IMMUTABLE] 사용시 
+    [Types.Initialize]: () => INITIAL_STATE,
 });
 export default reducer;

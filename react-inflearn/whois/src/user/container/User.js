@@ -27,7 +27,11 @@ export default function User({ match }) {
     useEffect(() => {
         dispatch(actions.fetchUser(name));
         dispatch(actions.fetchUserHistory(name));
-    }, [dispatch, name])
+    }, [dispatch, name]);
+
+    useEffect(() => {
+        return () => dispatch(actions.initialize());
+    }, [dispatch]);
 
     const { isFetched } = useFetchInfo(Types.FetchUser);
 
@@ -35,7 +39,7 @@ export default function User({ match }) {
         <Row justify="center">
             <Col xs={24} md={20} lg={24}>
                 <PageHeader 
-                    onBack={history.goBack} 
+                    onBack={() => history.push('/')} 
                     title={
                         <FetchLabel label="사용자 정보" actionType={Types.FetchUser} />
                     }
